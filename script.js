@@ -1,4 +1,3 @@
-// varzz
 const tasksContainer = document.getElementById('tasks');
 const addTaskButton = document.getElementById('add-task');
 const taskTitleInput = document.getElementById('task-title');
@@ -16,11 +15,9 @@ if (Notification.permission === "default") {
   });
 }
 
-
 if (Notification.permission === "denied") {
   document.getElementById("notification-warning").style.display = "block";
 }
-
 
 function loadTasks() {
   const savedTasks = document.cookie
@@ -35,10 +32,9 @@ function loadTasks() {
 function saveTasks() {
   document.cookie = `tasks=${encodeURIComponent(
     JSON.stringify(tasks)
-  )}; path=/; max-age=${60 * 60 * 24 * 7}`; // 7 days
+  )}; path=/; max-age=${60 * 60 * 24 * 7}`;
 }
 
-// new taskk
 addTaskButton.addEventListener('click', () => {
   const title = taskTitleInput.value.trim();
   const dueDate = dueDateInput.value;
@@ -55,7 +51,7 @@ addTaskButton.addEventListener('click', () => {
     dueDate: new Date(`${dueDate}T${dueTime}`),
     priority,
     status: 'Pending',
-    notified: { twoDays: false, oneDay: false, minutes30: false, minutes5: false }, // Notification flags
+    notified: { twoDays: false, oneDay: false, minutes30: false, minutes5: false },
   };
 
   tasks.push(task);
@@ -67,7 +63,6 @@ addTaskButton.addEventListener('click', () => {
   dueTimeInput.value = '';
   priorityInput.value = '1';
 });
-
 
 function renderTasks() {
   tasksContainer.innerHTML = '';
@@ -112,7 +107,6 @@ function renderTasks() {
   });
 }
 
-
 function checkNotifications() {
   const now = new Date();
 
@@ -120,51 +114,38 @@ function checkNotifications() {
     if (task.status === 'Completed') return;
 
     const dueDate = new Date(task.dueDate);
-    const timeUntilDue = (dueDate - now) / (1000 * 60); 
+    const timeUntilDue = (dueDate - now) / (1000 * 60);
 
-    console.log(`Checking task: ${task.title}`);
-    console.log(`Time until due (minutes): ${timeUntilDue}`);
-
-    
     if (timeUntilDue <= 2880 && timeUntilDue > 1440 && !task.notified.twoDays) {
-      console.log(`Notifying: ${task.title} - 2 days remaining.`);
       sendNotification(task.title, "is 2 days away from your reminder!");
       task.notified.twoDays = true;
     }
 
-   
     if (timeUntilDue <= 1440 && timeUntilDue > 30 && !task.notified.oneDay) {
-      console.log(`Notifying: ${task.title} - 1 day remaining.`);
       sendNotification(task.title, "is 1 day away from your reminder!");
       task.notified.oneDay = true;
     }
 
     if (timeUntilDue <= 30 && timeUntilDue > 5 && !task.notified.minutes30) {
-      console.log(`Notifying: ${task.title} - 30 minutes remaining.`);
       sendNotification(task.title, "is 30 minutes away from your reminder!");
       task.notified.minutes30 = true;
     }
 
-   
     if (timeUntilDue <= 5 && timeUntilDue > 0 && !task.notified.minutes5) {
-      console.log(`Notifying: ${task.title} - 5 minutes remaining.`);
       sendNotification(task.title, "is 5 minutes away from your reminder!");
       task.notified.minutes5 = true;
     }
   });
 
-  saveTasks(); // save noti gang
+  saveTasks();
 }
 
-// send noti fr
 function sendNotification(title, message) {
   if (Notification.permission === "granted") {
     new Notification(title, { body: message, icon: "icon.png" });
   }
 }
 
-// Periodic notification checker
-setInterval(checkNotifications, 60 * 1000); // check for debug samrath
+setInterval(checkNotifications, 60 * 1000);
 
-// LOAAAAAAAAAAAAD
 loadTasks();
